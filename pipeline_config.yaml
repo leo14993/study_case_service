@@ -1,0 +1,5 @@
+unitTests:
+  installTestRequirements: "pip install -r requirements-dev.txt"
+  testCommand: "pytest"
+  envs:
+    envFile: ".env.example"
