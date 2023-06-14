@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+    - id: pytest
+      name: pytest
+      description: pytest runs test cases
+      stages: [commit]
+      types: [python]
+      entry: pytest
+      language: python
+      pass_filenames: false
+      always_run: true
+  - repo: local
+    hooks:
+    - id: sonar-scanner
+      name: sonar-scanner
+      description: sonar runs scanners for code quality
+      stages: [push]
+      types: [python]
+      entry: sonar-scanner
+      language: system
+      pass_filenames: false
+      always_run: true

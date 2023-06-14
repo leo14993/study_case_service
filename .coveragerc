@@ -1,0 +1,37 @@
+# .coveragerc to control coverage.py
+[run]
+omit =
+    src/main.py
+    src/utils.py
+    src/enums.py
+    src/logger.py
+    src/settings.py
+    src/decorators.py
+    src/routes/misc.py
+    src/adapters/base.py
+    src/dependencies/authentication/authenticate_user.py
+
+[paths]
+source =
+    src/
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain about missing debug-only code:
+    def __repr__
+    if self\.debug
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplemented
+    raise NotImplementedError
+
+    # Don't complain about abstract methods, they aren't run:
+    @(abc\.)?abstractmethod
+
+    # Custom decorator, build to exclude functions from unit test coverage
+    @no_coverage

@@ -1,0 +1,70 @@
+version: "3"
+services:
+  localstack:
+    image: localstack/localstack
+    container_name: LocalStack
+    ports:
+      - "4566:4566"  #<external_port:internal_container_port>
+      - "4571:4571"
+    environment:
+      - SERVICES=dynamodb,s3,sqs,sns,kinesis
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - AWS_DEFAULT_REGION=us-east-1
+      - HOST_TMP_FOLDER=${TMPDIR:-/tmp/}localstack
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "./.localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - myNetwork
+  dynamodb-local:
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+    networks:
+      - myNetwork
+  redis:
+    container_name: Redis
+    image: redis
+    restart: always
+    command: redis-server
+    ports:
+      - "6379:6379"
+    networks:
+      - myNetwork
+  redis2:
+    container_name: Redis2
+    image: redis
+    restart: always
+    command: redis-server
+    ports:
+      - "6382:6379"
+    networks:
+      - myNetwork
+
+  postgresql:
+    image: postgres
+    container_name: PostgresDB
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - APP_DB_NAME=my-db-name
+    volumes:
+      - ./postgres.conf:/etc/postgresql/postgresql.conf
+    networks:
+      - myNetwork
+
+networks:
+  myNetwork:
+    driver: bridge
+
